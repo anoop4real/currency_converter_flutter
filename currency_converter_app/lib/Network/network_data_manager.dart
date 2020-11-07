@@ -1,4 +1,4 @@
-import 'package:currencyconverterapp/Network/networkAPI.dart';
+import 'package:currencyconverterapp/Network/network_api.dart';
 import 'package:currencyconverterapp/Network/result.dart';
 import 'package:dio/dio.dart';
 

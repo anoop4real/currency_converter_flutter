@@ -1,6 +1,6 @@
 import 'package:currencyconverterapp/Helpers/service_locator.dart';
-import 'package:currencyconverterapp/Modules/ExchangeRate/UI/exchangRateUI.dart';
-import 'package:currencyconverterapp/Network/networkDataManager.dart';
+import 'package:currencyconverterapp/Modules/ExchangeRate/UI/exchang_rate_ui.dart';
+import 'package:currencyconverterapp/Network/network_data_manager.dart';
 import 'package:currencyconverterapp/Network/result.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
