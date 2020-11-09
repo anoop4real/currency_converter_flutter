@@ -1,5 +1,9 @@
-import 'package:currencyconverterapp/Network/network_api.dart';
-import 'package:currencyconverterapp/Network/result.dart';
+import 'dart:io';
+
+import '../Exceptions/app_exceptions.dart';
+import '../Exceptions/exception_types.dart';
+import '../Network/network_api.dart';
+import '../Network/result.dart';
 import 'package:dio/dio.dart';
 
 class NetworkDataManager implements WebServiceApi {
@@ -29,18 +33,19 @@ class NetworkDataManager implements WebServiceApi {
         queryParameters: queryParameters,
       );
       return Result.success(response.data);
-    } on DioError catch (e) {
+    } catch (e) {
+      ApplicationException exception = handleException(e);
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
-      if (e.response != null) {
-        print(e.response.data);
-        print(e.response.headers);
-        print(e.response.request);
-      } else {
-        // Something happened in setting up or sending the request that triggered an Error
-        print(e.request);
-        print(e.message);
-      }
+//      if (e.response != null) {
+//        print(e.response.data);
+//        print(e.response.headers);
+//        print(e.response.request);
+//      } else {
+//        // Something happened in setting up or sending the request that triggered an Error
+//        print(e.request);
+//        print(e.message);
+//      }
       return Result.failure(e);
     }
   }
@@ -55,19 +60,86 @@ class NetworkDataManager implements WebServiceApi {
         queryParameters: queryParameters,
       );
       return Result.success(response.data);
-    } on DioError catch (e) {
-      if (e.response != null) {
-        print(e.response.data);
-        print(e.response.headers);
-        print(e.response.request);
-      } else {
-        // Something happened in setting up or sending the request that triggered an Error
-        print(e.request);
-        print(e.message);
-      }
-      return Result.failure(e);
+    } catch (e) {
+      ApplicationException exception = handleException(e);
+//      if (e.response != null) {
+//        print(e.response.data);
+//        print(e.response.headers);
+//        print(e.response.request);
+//      } else {
+//        // Something happened in setting up or sending the request that triggered an Error
+//        print(e.request);
+//        print(e.message);
+//      }
+      return Result.failure(exception);
     }
   }
 
-  // TODO: Created error handler
+  static ApplicationException handleException(error) {
+    if (error is Exception) {
+      try {
+        ApplicationException exception;
+        if (error is DioError) {
+          switch (error.type) {
+            case DioErrorType.CANCEL:
+              exception = ApplicationException(ExceptionType.requestCancelled);
+              break;
+            case DioErrorType.CONNECT_TIMEOUT:
+              exception = ApplicationException(ExceptionType.requestTimeout);
+              break;
+            case DioErrorType.DEFAULT:
+              exception = ApplicationException(ExceptionType.noInternetConnection);
+              break;
+            case DioErrorType.RECEIVE_TIMEOUT:
+              exception = ApplicationException(ExceptionType.timeout);
+              break;
+            case DioErrorType.RESPONSE:
+              switch (error.response.statusCode) {
+                case 400:
+                  exception = ApplicationException(ExceptionType.unauthorisedRequest);
+                  break;
+                case 401:
+                  exception = ApplicationException(ExceptionType.unauthorisedRequest);
+                  break;
+                case 403:
+                  exception = ApplicationException(ExceptionType.unauthorisedRequest);
+                  break;
+                case 404:
+                  exception = ApplicationException(ExceptionType.notFound);
+                  break;
+                case 409:
+                  exception = ApplicationException(ExceptionType.unknownError);
+                  break;
+                case 408:
+                  exception = ApplicationException(ExceptionType.requestTimeout);
+                  break;
+                case 500:
+                  exception = ApplicationException(ExceptionType.internalServerError);
+                  break;
+                case 503:
+                  exception = ApplicationException(ExceptionType.serviceUnavailable);
+                  break;
+                default:
+                  exception = ApplicationException(ExceptionType.unknownError);
+              }
+              break;
+            case DioErrorType.SEND_TIMEOUT:
+              exception = ApplicationException(ExceptionType.timeout);
+              break;
+          }
+        } else if (error is SocketException) {
+          exception = ApplicationException(ExceptionType.noInternetConnection);
+        } else {
+          exception = ApplicationException(ExceptionType.unknownError);
+        }
+        return exception;
+      } on FormatException catch (e) {
+        return ApplicationException(ExceptionType.formatException);
+      } catch (_) {
+        return ApplicationException(ExceptionType.unknownError);
+      }
+    } else {
+      return ApplicationException(ExceptionType.unknownError);
+    }
+  }
 }
