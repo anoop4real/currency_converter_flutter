@@ -4,6 +4,7 @@ enum ExceptionType {
   noInternetConnection,
   timeout,
   unauthorisedRequest,
+  badRequest,
   notFound,
   internalServerError,
   serviceUnavailable,
@@ -12,7 +13,7 @@ enum ExceptionType {
 }
 
 extension ExceptionTypeExtension on ExceptionType {
-
+ // TODO: Add messages
   String message() {
     switch (this) {
 
@@ -45,6 +46,8 @@ extension ExceptionTypeExtension on ExceptionType {
         break;
       case ExceptionType.formatException:
         // TODO: Handle this case.
+        break;
+      case ExceptionType.badRequest:
         break;
     }
   }

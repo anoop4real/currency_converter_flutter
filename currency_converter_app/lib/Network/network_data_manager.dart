@@ -46,7 +46,7 @@ class NetworkDataManager implements WebServiceApi {
 //        print(e.request);
 //        print(e.message);
 //      }
-      return Result.failure(e);
+      return Result.failure(exception);
     }
   }
 
@@ -62,15 +62,6 @@ class NetworkDataManager implements WebServiceApi {
       return Result.success(response.data);
     } catch (e) {
       ApplicationException exception = handleException(e);
-//      if (e.response != null) {
-//        print(e.response.data);
-//        print(e.response.headers);
-//        print(e.response.request);
-//      } else {
-//        // Something happened in setting up or sending the request that triggered an Error
-//        print(e.request);
-//        print(e.message);
-//      }
       return Result.failure(exception);
     }
   }
@@ -88,7 +79,8 @@ class NetworkDataManager implements WebServiceApi {
               exception = ApplicationException(ExceptionType.requestTimeout);
               break;
             case DioErrorType.DEFAULT:
-              exception = ApplicationException(ExceptionType.noInternetConnection);
+              exception =
+                  ApplicationException(ExceptionType.noInternetConnection);
               break;
             case DioErrorType.RECEIVE_TIMEOUT:
               exception = ApplicationException(ExceptionType.timeout);
@@ -96,13 +88,15 @@ class NetworkDataManager implements WebServiceApi {
             case DioErrorType.RESPONSE:
               switch (error.response.statusCode) {
                 case 400:
-                  exception = ApplicationException(ExceptionType.unauthorisedRequest);
+                  exception = ApplicationException(ExceptionType.badRequest);
                   break;
                 case 401:
-                  exception = ApplicationException(ExceptionType.unauthorisedRequest);
+                  exception =
+                      ApplicationException(ExceptionType.unauthorisedRequest);
                   break;
                 case 403:
-                  exception = ApplicationException(ExceptionType.unauthorisedRequest);
+                  exception =
+                      ApplicationException(ExceptionType.unauthorisedRequest);
                   break;
                 case 404:
                   exception = ApplicationException(ExceptionType.notFound);
@@ -111,13 +105,16 @@ class NetworkDataManager implements WebServiceApi {
                   exception = ApplicationException(ExceptionType.unknownError);
                   break;
                 case 408:
-                  exception = ApplicationException(ExceptionType.requestTimeout);
+                  exception =
+                      ApplicationException(ExceptionType.requestTimeout);
                   break;
                 case 500:
-                  exception = ApplicationException(ExceptionType.internalServerError);
+                  exception =
+                      ApplicationException(ExceptionType.internalServerError);
                   break;
                 case 503:
-                  exception = ApplicationException(ExceptionType.serviceUnavailable);
+                  exception =
+                      ApplicationException(ExceptionType.serviceUnavailable);
                   break;
                 default:
                   exception = ApplicationException(ExceptionType.unknownError);

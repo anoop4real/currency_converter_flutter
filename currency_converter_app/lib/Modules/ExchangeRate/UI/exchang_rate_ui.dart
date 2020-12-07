@@ -8,26 +8,29 @@ class ExchangeRateUI extends StatefulWidget {
   @override
   _ExchangeRateUIState createState() => _ExchangeRateUIState();
 }
+
 // TODO: Add BaseView
 class _ExchangeRateUIState extends State<ExchangeRateUI> {
   ExchangeViewModel _viewModel = service_locator<ExchangeViewModel>();
-  List<String> _currencies = [
-    'EUR',
-    'INR',
-    'CAD',
-    'DER'
-  ]; // TODO: Use viewmodel
-  String _dropDownValue = 'EUR'; // TODO: Use viewmodel
+  List<String> _currencies;
+  String _dropDownValue = 'EUR';
   final TextEditingController _amountTextController = TextEditingController();
   @override
   void initState() {
     super.initState();
+    _currencies = _viewModel.getCurrencyCodes();
+    _dropDownValue = _currencies.first;
+    _amountTextController.addListener(_processAmountField);
   }
 
   @override
   void dispose() {
     _amountTextController.dispose();
     super.dispose();
+  }
+
+  _processAmountField() {
+    print("Amount text field: ${_amountTextController.text}");
   }
 
   @override
@@ -58,7 +61,7 @@ class _ExchangeRateUIState extends State<ExchangeRateUI> {
             itemCount: model.rate.rates.keys.toList().length,
             itemBuilder: (BuildContext context, int index) {
               var itemKey = model.rate.rates.keys.toList()[index];
-              var itemValue = model.rate.rates[itemKey] as double;
+              var itemValue = model.rate.rates[itemKey];
               return ListTile(
                 title: Text(itemKey),
                 trailing: Text(itemValue.toString()),
@@ -68,9 +71,7 @@ class _ExchangeRateUIState extends State<ExchangeRateUI> {
         : Center(
             child: RaisedButton(
               child: Text("Fetch"),
-              onPressed: () => {
-                fetchCurrenciesWith(model)
-              },
+              onPressed: () => {fetchCurrenciesWith(model)},
             ),
           );
   }
@@ -116,7 +117,7 @@ class _ExchangeRateUIState extends State<ExchangeRateUI> {
       }).toList(),
       onChanged: (newValue) {
         // TODO: Revisit
-        _viewModel.fetchCurrencyRatesFor(newValue);
+        _viewModel.fetchCurrencyRatesFor(_amountTextController.text, newValue);
         setState(() {
           _dropDownValue = newValue;
         });
@@ -138,13 +139,15 @@ class _ExchangeRateUIState extends State<ExchangeRateUI> {
   }
 
   void fetchCurrenciesWith(ExchangeViewModel model) {
-
-    model.fetchCurrencyRatesFor(_dropDownValue).then((result) {
+    model
+        .fetchCurrencyRatesFor(_amountTextController.text, _dropDownValue)
+        .then((result) {
       if (!result) {
         _showDialog();
       }
     });
   }
+
   void _showDialog() {
     // flutter defined function
     showDialog(

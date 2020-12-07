@@ -1,4 +1,4 @@
-enum ResultStatus { success, error, loading }
+enum ResultStatus { success, error }
 
 class Result<T, E> {
   final E error;
@@ -11,10 +11,6 @@ class Result<T, E> {
   const Result.failure(this.error)
       : status = ResultStatus.error,
         value = null;
-  const Result.loading()
-      : status = ResultStatus.loading,
-        value = null,
-        error = null;
 
   Result._internal(this.status, this.error, this.value);
 }

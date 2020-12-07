@@ -1,13 +1,13 @@
-
 class Rate {
-  Map<String, dynamic> rates;
+  Map<String, double> rates;
   String base;
   String date;
 
   Rate({this.rates, this.base, this.date});
 
   Rate.fromJson(Map<String, dynamic> json) {
-    rates = json['rates'];
+    rates = Map.from(json["rates"])
+        .map((k, v) => MapEntry<String, double>(k, v.toDouble()));
     base = json['base'];
     date = json['date'];
   }
