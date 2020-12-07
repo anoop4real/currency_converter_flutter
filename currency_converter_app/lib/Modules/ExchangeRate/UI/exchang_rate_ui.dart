@@ -2,6 +2,7 @@ import 'package:currencyconverterapp/Helpers/service_locator.dart';
 import 'package:currencyconverterapp/Helpers/view_state.dart';
 import 'package:currencyconverterapp/Modules/ExchangeRate/ViewModel/exchange_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ExchangeRateUI extends StatefulWidget {
@@ -46,12 +47,22 @@ class _ExchangeRateUIState extends State<ExchangeRateUI> {
           appBar: AppBar(
             title: Text('Exchange Currency'),
           ),
-          body: Container(
-              child: model.state == ViewState.Busy
-                  ? Center(child: CircularProgressIndicator())
-                  : _buildColumn(model)),
+          body: Container(child: _buildColumn(model)),
         ),
       ),
+    );
+  }
+
+  Widget _buildStack(ExchangeViewModel model) {
+    Widget tempWidget;
+    if (model.state == ViewState.Busy) {
+      tempWidget = Center(child: CircularProgressIndicator());
+    } else {
+      tempWidget = Center();
+    }
+    return Stack(
+      alignment: FractionalOffset.center,
+      children: <Widget>[_buildList(model), tempWidget],
     );
   }
 
@@ -86,7 +97,7 @@ class _ExchangeRateUIState extends State<ExchangeRateUI> {
           const SizedBox(
             height: 10.0,
           ),
-          Expanded(child: _buildList(viewModel))
+          Expanded(child: _buildStack(viewModel))
         ],
       ),
     );
@@ -96,6 +107,12 @@ class _ExchangeRateUIState extends State<ExchangeRateUI> {
       TextEditingController controller, String hintText) {
     return TextField(
         controller: controller,
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [
+          WhitelistingTextInputFormatter(
+            RegExp("[0-9.]"),
+          )
+        ],
         decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.only(left: 0, bottom: 0, top: 0, right: 0),
