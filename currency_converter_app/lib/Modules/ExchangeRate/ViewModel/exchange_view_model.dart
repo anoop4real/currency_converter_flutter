@@ -13,7 +13,7 @@ import '../../../Modules/ExchangeRate/Service/exchange_service.dart';
 import 'base_view_model.dart';
 
 class ExchangeViewModel extends BaseViewModel {
-  final ExchangeRateService _exchangeRateService =
+  final ServiceApi _exchangeRateService =
       service_locator<ServiceApi>();
   List<String> _currencies = [
     'EUR',

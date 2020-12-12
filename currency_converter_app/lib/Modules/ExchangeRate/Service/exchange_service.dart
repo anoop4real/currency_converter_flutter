@@ -9,7 +9,7 @@ import 'package:currencyconverterapp/Network/network_data_manager.dart';
 import 'package:currencyconverterapp/Network/result.dart';
 
 class ExchangeRateService implements ServiceApi {
-  final NetworkDataManager _networkDataManager =
+  final WebServiceApi _networkDataManager =
       service_locator<WebServiceApi>();
   @override
   Future<Result<Rate, ApplicationException>> fetchExchangeRatesFor(
