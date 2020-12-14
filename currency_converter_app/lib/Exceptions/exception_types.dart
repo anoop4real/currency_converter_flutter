@@ -42,7 +42,7 @@ extension ExceptionTypeExtension on ExceptionType {
         // TODO: Handle this case.
         break;
       case ExceptionType.unknownError:
-        // TODO: Handle this case.
+        return ("UnknownError");
         break;
       case ExceptionType.formatException:
         // TODO: Handle this case.
