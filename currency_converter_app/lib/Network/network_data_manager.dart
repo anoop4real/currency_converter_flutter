@@ -32,20 +32,10 @@ class NetworkDataManager implements WebServiceApi {
         url,
         queryParameters: queryParameters,
       );
+      print(response.data);
       return Result.success(response.data);
     } catch (e) {
       ApplicationException exception = handleException(e);
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-//      if (e.response != null) {
-//        print(e.response.data);
-//        print(e.response.headers);
-//        print(e.response.request);
-//      } else {
-//        // Something happened in setting up or sending the request that triggered an Error
-//        print(e.request);
-//        print(e.message);
-//      }
       return Result.failure(exception);
     }
   }
