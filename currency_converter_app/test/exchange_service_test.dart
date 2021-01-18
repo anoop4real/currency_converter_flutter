@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import 'Mocks/mock_network_manager.dart';
 
 void main() {
-  setUpAll(() {
+  setUp(() {
     setupLocator();
     service_locator.allowReassignment = true;
   });

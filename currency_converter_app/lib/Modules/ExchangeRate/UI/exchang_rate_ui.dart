@@ -166,7 +166,6 @@ class _ExchangeRateUIState extends State<ExchangeRateUI> {
   }
 
   void _showDialog() {
-    // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
