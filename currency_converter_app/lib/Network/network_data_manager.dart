@@ -10,12 +10,9 @@ class NetworkDataManager implements WebServiceApi {
   static const _defaultConnectTimeout = Duration.millisecondsPerMinute;
   static const _defaultReceiveTimeout = Duration.millisecondsPerMinute;
 
-  // TODO: Get it from Environments
   final String baseUrl;
-  // Dio client
   Dio _dio = Dio();
-  //final List<Interceptor> interceptors; // TODO Implement later
-
+  
   NetworkDataManager(this.baseUrl) {
     _dio
       ..options.baseUrl = baseUrl
